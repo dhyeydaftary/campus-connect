@@ -11,4 +11,4 @@ if __name__ == "__main__":
             seed_admin()
 
     flask_debug = os.environ.get("FLASK_DEBUG", "False").lower() in ("true", "1", "t")
-    socketio.run(app, debug=flask_debug, host="0.0.0.0", port=5000)
+    socketio.run(app, debug=flask_debug, host="0.0.0.0", port=5000, allow_unsafe_werkzeug=True)

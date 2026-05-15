@@ -63,20 +63,47 @@
 ## 📸 Screenshots
 
 <p align="center">
-  <img src="docs/screenshots/landing_hero.png" alt="Landing Page" width="80%">
+  <img src="docs/screenshots/landing_page.png" alt="Landing Page" width="80%">
 </p>
 
 <details>
   <summary>📸 View More Screenshots</summary>
   <br>
   <p align="center">
-    <img src="docs/screenshots/landing_features.png" alt="Core Features & Terminal" width="80%">
+    <img src="docs/screenshots/student_login.png" alt="Student Login with Details" width="80%">
+  </p>
+  <p align="center">
+    <img src="docs/screenshots/OTP_login.png" alt="OTP Login" width="80%">
+  </p>
+  <p align="center">
+    <img src="docs/screenshots/home_page.png" alt="Home Page" width="80%">
+  </p>
+  <p align="center">
+    <img src="docs/screenshots/searchbar.png" alt="Search bar" width="80%">
+  </p>
+  <p align="center">
+    <img src="docs/screenshots/profile_page.png" alt="Profile Page" width="80%">
+  </p>
+  <p align="center">
+    <img src="docs/screenshots/create_post.png" alt="Create Post" width="80%">
+  </p>
+  <p align="center">
+    <img src="docs/screenshots/announcement.png" alt="Announcement" width="80%">
+  </p>
+  <p align="center">
+    <img src="docs/screenshots/typing_indicator.png" alt="Live Chat with typing indicator" width="80%">
+  </p>
+  <p align="center">
+    <img src="docs/screenshots/terminal.png" alt="Terminal Output" width="80%">
   </p>
   <p align="center">
     <img src="docs/screenshots/admin_dashboard.png" alt="Admin Dashboard" width="80%">
   </p>
   <p align="center">
-    <img src="docs/screenshots/admin_users.png" alt="Admin User Management" width="80%">
+    <img src="docs/screenshots/admin_users.png" alt="Admin Users" width="80%">
+  </p>
+  <p align="center">
+    <img src="docs/screenshots/admin_events.png" alt="Admin Events" width="80%">
   </p>
 </details>
 
