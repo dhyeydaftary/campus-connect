@@ -17,30 +17,31 @@ def create_verified_user():
         test_enrollment = "TEST001"
         test_password = "password123"
         
-        print(f"--- Attempting to create verified test user ---")
+        print(f"--- Resetting and creating verified test user ---")
         
-        # Check if user already exists
+        # Delete existing user if they exist to ensure clean state
         existing_user = User.query.filter((User.email == test_email) | (User.enrollment_no == test_enrollment)).first()
-        
         if existing_user:
-            print(f"Error: A user with email '{test_email}' or enrollment '{test_enrollment}' already exists.")
-            return
+            print(f"Removing existing user: {existing_user.email}")
+            db.session.delete(existing_user)
+            db.session.commit()
 
         try:
-            # Create the user object
-            user = User(
-                first_name="Test",
-                last_name="User",
-                email=test_email,
-                enrollment_no=test_enrollment,
-                university="Test University",
-                major="Computer Science",
-                batch="2025",
-                is_verified=True,      # Bypasses OTP verification
-                is_password_set=True,  # Bypasses initial password setup
-                status="ACTIVE",        # Ensures account is not PENDING or BLOCKED
-                account_type="student"
-            )
+            # Create the user object using manual assignment to avoid constructor issues
+            user = User()
+            user.first_name = "Test"
+            user.last_name = "User"
+            user.email = test_email
+            user.enrollment_no = test_enrollment
+            user.university = "Test University"
+            user.major = "CSE"  # Valid branch from the login dropdown
+            user.batch = "2025"
+            user.account_type = "student"
+            
+            # Set flags manually to avoid constructor conflicts
+            user.is_verified = True      # Bypasses OTP verification
+            user.is_password_set = True  # Bypasses initial password setup
+            user.status = "ACTIVE"       # Ensures account is not PENDING or BLOCKED
             
             # Set the password using the model's helper method (handles hashing)
             user.set_password(test_password)
@@ -53,6 +54,7 @@ def create_verified_user():
             print(f"Email: {test_email}")
             print(f"Password: {test_password}")
             print(f"Enrollment No: {test_enrollment}")
+            print(f"Branch (Major): {user.major}")
             print(f"Status: {user.status}")
             print(f"Verified: {user.is_verified}")
             
