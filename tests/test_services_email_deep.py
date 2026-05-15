@@ -14,10 +14,10 @@ class TestEmailServiceDeep:
             # Empty list
             assert send_email("Sub", [], "html") is False
 
-    @patch('app.services.email_service.SendGridAPIClient')
-    def test_send_email_smtp_exception(self, mock_sg_class, app):
+    @patch('app.services.email_service.mail')
+    def test_send_email_smtp_exception(self, mock_mail, app):
         """Verify send_email returns False and logs error on SMTP exception."""
-        mock_sg_class.return_value.send.side_effect = Exception("SMTP Connection Failed")
+        mock_mail.send.side_effect = Exception("SMTP Connection Failed")
         with app.app_context():
             with patch('app.services.email_service.current_app.logger.error') as mock_log:
                 result = send_email("Subject", ["test@example.com"], "<h1>Body</h1>")
