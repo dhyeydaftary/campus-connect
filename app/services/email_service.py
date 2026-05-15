@@ -107,3 +107,4 @@ def send_status_update_email(ticket):
         ticket=ticket
     )
     return send_email(f"Status Update on Ticket #{ticket.id}", [ticket.email], html)
+
