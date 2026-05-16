@@ -30,11 +30,11 @@ class Config:
     _db_url = os.environ.get("DATABASE_URL", "")
     if _db_url.startswith("postgres://"):
         _db_url = _db_url.replace("postgres://", "postgresql://", 1)
-    
+
     # Render PostgreSQL requires SSL. Append sslmode=require if using Postgres.
     if _db_url and _db_url.startswith("postgresql://") and "sslmode=" not in _db_url:
         _db_url += "?sslmode=require" if "?" not in _db_url else "&sslmode=require"
-        
+
     SQLALCHEMY_DATABASE_URI = _db_url or None
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ENGINE_OPTIONS = {
