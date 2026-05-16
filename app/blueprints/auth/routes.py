@@ -4,6 +4,7 @@ Auth Blueprint — Page routes and API routes for authentication.
 
 from flask import Blueprint, render_template, request, jsonify, session, redirect, url_for, current_app
 from sqlalchemy import or_
+from sqlalchemy.exc import OperationalError
 from datetime import datetime, timezone, timedelta
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
 from app.extensions import db, limiter
@@ -161,11 +162,14 @@ def get_enrollment_suggestions():
     if not major or not query:
         return jsonify({"suggestions": []})
 
-    users = User.query.filter(
-        User.major == major,
-        User.enrollment_no.ilike(f"{query}%"),
-        User.status.in_(['ACTIVE', 'PENDING'])
-    ).limit(5).all()
+    try:
+        users = User.query.filter(
+            User.major == major,
+            User.enrollment_no.ilike(f"{query}%"),
+            User.status.in_(['ACTIVE', 'PENDING'])
+        ).limit(5).all()
+    except OperationalError:
+        return jsonify({"error": "Service temporarily unavailable"}), 503
 
     suggestions = [u.enrollment_no for u in users]
     return jsonify({"suggestions": suggestions})
@@ -181,7 +185,10 @@ def get_student_details():
     if not enrollment_no:
         return jsonify({"error": "Enrollment number is required"}), 400
 
-    user = User.query.filter(User.enrollment_no.ilike(enrollment_no)).first()
+    try:
+        user = User.query.filter(User.enrollment_no.ilike(enrollment_no)).first()
+    except OperationalError:
+        return jsonify({"error": "Service temporarily unavailable"}), 503
 
     if not user:
         return jsonify({"error": "Student not found"}), 404
