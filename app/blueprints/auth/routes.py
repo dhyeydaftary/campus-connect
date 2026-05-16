@@ -168,7 +168,8 @@ def get_enrollment_suggestions():
             User.enrollment_no.ilike(f"{query}%"),
             User.status.in_(['ACTIVE', 'PENDING'])
         ).limit(5).all()
-    except OperationalError:
+    except OperationalError as e:
+        current_app.logger.error(f"Database OperationalError in get_enrollment_suggestions: {e}")
         return jsonify({"error": "Service temporarily unavailable"}), 503
 
     suggestions = [u.enrollment_no for u in users]
@@ -187,7 +188,8 @@ def get_student_details():
 
     try:
         user = User.query.filter(User.enrollment_no.ilike(enrollment_no)).first()
-    except OperationalError:
+    except OperationalError as e:
+        current_app.logger.error(f"Database OperationalError in get_student_details: {e}")
         return jsonify({"error": "Service temporarily unavailable"}), 503
 
     if not user:
