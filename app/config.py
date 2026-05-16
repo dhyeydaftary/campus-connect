@@ -44,7 +44,7 @@ class Config:
         "pool_size": 5,
         "max_overflow": 2,
     }
-    
+
     # Enable TCP Keepalives for Render PostgreSQL to prevent dropped connections
     if _db_url and _db_url.startswith("postgresql://"):
         SQLALCHEMY_ENGINE_OPTIONS["connect_args"] = {
