@@ -49,3 +49,47 @@ def seed_admin():
     db.session.add(admin)
     db.session.commit()
     current_app.logger.info("[OK] Default admin created")
+
+def seed_test_user():
+    """
+    Seeds a test student user for development purposes.
+    """
+    if current_app.config.get("IS_PRODUCTION", False):
+        return  # Do not seed test user in production
+
+    test_email = "test@example.com"
+    test_enrollment = "TEST001"
+    test_password = "password123"
+
+    current_app.logger.info(f"[SEED] Seeding test user with email: {test_email}")
+
+    user = User.query.filter((User.email == test_email) | (User.enrollment_no == test_enrollment)).first()
+
+    if user:
+        # Update existing test user to ensure it works
+        user.set_password(test_password)
+        user.status = "ACTIVE"
+        user.is_verified = True
+        user.is_password_set = True
+        db.session.commit()
+        current_app.logger.info("[OK] Test user account updated")
+        return
+
+    user = User(
+        first_name="Test",
+        last_name="User",
+        email=test_email,
+        enrollment_no=test_enrollment,
+        university="Test University",
+        major="CSE",
+        batch="2025",
+        account_type="student"
+    )
+    user.is_verified = True
+    user.is_password_set = True
+    user.status = "ACTIVE"
+    user.set_password(test_password)
+    
+    db.session.add(user)
+    db.session.commit()
+    current_app.logger.info("[OK] Default test student created")
