@@ -32,6 +32,13 @@ class Config:
         _db_url = _db_url.replace("postgres://", "postgresql://", 1)
     SQLALCHEMY_DATABASE_URI = _db_url or None
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        "pool_pre_ping": True,
+        "pool_recycle": 280,
+        "pool_timeout": 20,
+        "pool_size": 5,
+        "max_overflow": 2,
+    }
 
     # ==================================
     # CACHE / RATE LIMITING
