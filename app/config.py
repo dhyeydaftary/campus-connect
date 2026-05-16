@@ -45,6 +45,15 @@ class Config:
         "max_overflow": 2,
     }
 
+    # Enable TCP Keepalives for Render PostgreSQL to prevent dropped connections
+    if _db_url and _db_url.startswith("postgresql://"):
+        SQLALCHEMY_ENGINE_OPTIONS["connect_args"] = {
+            "keepalives": 1,
+            "keepalives_idle": 30,
+            "keepalives_interval": 10,
+            "keepalives_count": 5
+        }
+
     # ==================================
     # CACHE / RATE LIMITING
     # ==================================
