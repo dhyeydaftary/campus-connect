@@ -37,21 +37,26 @@ class Config:
 
     SQLALCHEMY_DATABASE_URI = _db_url or None
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_ENGINE_OPTIONS = {
-        "pool_pre_ping": True,
-        "pool_recycle": 280,
-        "pool_timeout": 20,
-        "pool_size": 5,
-        "max_overflow": 2,
-    }
-
-    # Enable TCP Keepalives for Render PostgreSQL to prevent dropped connections
-    if _db_url and _db_url.startswith("postgresql://"):
-        SQLALCHEMY_ENGINE_OPTIONS["connect_args"] = {
-            "keepalives": 1,
-            "keepalives_idle": 30,
-            "keepalives_interval": 10,
-            "keepalives_count": 5
+    if IS_PRODUCTION:
+        from sqlalchemy.pool import NullPool
+        SQLALCHEMY_ENGINE_OPTIONS = {
+            "poolclass": NullPool,
+        }
+        # Enable TCP Keepalives for Render PostgreSQL to prevent dropped connections
+        if _db_url and _db_url.startswith("postgresql://"):
+            SQLALCHEMY_ENGINE_OPTIONS["connect_args"] = {
+                "keepalives": 1,
+                "keepalives_idle": 30,
+                "keepalives_interval": 10,
+                "keepalives_count": 5
+            }
+    else:
+        SQLALCHEMY_ENGINE_OPTIONS = {
+            "pool_pre_ping": True,
+            "pool_recycle": 280,
+            "pool_timeout": 20,
+            "pool_size": 5,
+            "max_overflow": 2,
         }
 
     # ==================================
