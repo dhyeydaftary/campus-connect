@@ -50,6 +50,7 @@ def seed_admin():
     db.session.commit()
     current_app.logger.info("[OK] Default admin created")
 
+
 def seed_test_user():
     """
     Seeds a test student user for development purposes.
@@ -89,7 +90,7 @@ def seed_test_user():
     user.is_password_set = True
     user.status = "ACTIVE"
     user.set_password(test_password)
-    
+
     db.session.add(user)
     db.session.commit()
     current_app.logger.info("[OK] Default test student created")
