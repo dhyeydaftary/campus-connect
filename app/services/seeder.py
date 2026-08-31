@@ -51,6 +51,57 @@ def seed_admin():
     current_app.logger.info("[OK] Default admin created")
 
 
+def seed_demo_account():
+    """
+    Seeds or updates the public demo student account from .env variables.
+    Powers the "Try Demo Account" quick-login button on the login page.
+    No-ops silently if DEMO_ACCOUNT_EMAIL / DEMO_ACCOUNT_PASSWORD are unset.
+    """
+    email = os.environ.get("DEMO_ACCOUNT_EMAIL", "").strip()
+    password = os.environ.get("DEMO_ACCOUNT_PASSWORD")
+
+    if not email or not password:
+        return
+    current_app.logger.info(f"[SEED] Seeding demo account with email: {email}")
+
+    enrollment_no = os.environ.get("DEMO_ACCOUNT_ENROLLMENT", "").strip() or "DEMO001"
+
+    # Find the specific demo user by email to ensure we update the correct one.
+    demo = User.query.filter_by(email=email.lower()).first()
+
+    if demo:
+        # Keep credentials and student flags synced with .env on startup.
+        demo.email = email.lower()
+        demo.enrollment_no = enrollment_no
+        demo.account_type = "student"
+        demo.is_verified = True
+        demo.is_password_set = True
+        demo.status = "ACTIVE"
+        demo.set_password(password)
+        db.session.commit()
+        current_app.logger.info("[OK] Demo account updated")
+        return
+
+    demo = User(
+        first_name="Demo",
+        last_name="Student",
+        email=email.lower(),
+        university="Campus Connect University",
+        major="CSE",
+        batch="2025",
+        account_type="student",
+        enrollment_no=enrollment_no
+    )
+    demo.is_verified = True
+    demo.is_password_set = True
+    demo.status = "ACTIVE"
+    demo.set_password(password)
+
+    db.session.add(demo)
+    db.session.commit()
+    current_app.logger.info("[OK] Demo account created")
+
+
 def seed_test_user():
     """
     Seeds a test student user for development purposes.

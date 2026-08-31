@@ -392,6 +392,35 @@ def login_with_password():
     }), 200
 
 
+@auth_bp.route("/api/auth/demo-login", methods=["POST"])
+@limiter.limit("5 per minute")
+def demo_login():
+    """Logs a pre-seeded demo student in server-side.
+
+    No credentials are sent from the client — the demo user is resolved
+    from the DEMO_ACCOUNT_EMAIL env var via a fixed lookup.
+    """
+    import os
+
+    demo_email = os.environ.get("DEMO_ACCOUNT_EMAIL", "").strip().lower()
+    if not demo_email:
+        return jsonify({"error": "Demo account is not configured."}), 503
+
+    user = User.query.filter_by(email=demo_email, account_type="student").first()
+    if not user:
+        return jsonify({"error": "Demo account is not available."}), 503
+
+    if user.status == "BLOCKED":
+        return jsonify({"error": "Demo account is not available."}), 503
+
+    session.clear()
+    session["user_id"] = user.id
+    session["user_name"] = user.full_name
+    session["account_type"] = user.account_type
+
+    return jsonify({"redirect_url": "/home"}), 200
+
+
 @auth_bp.route("/api/auth/forgot-password/request", methods=["POST"])
 @limiter.limit("5 per 10 minutes")
 def forgot_password_request():
