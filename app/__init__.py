@@ -180,12 +180,17 @@ def create_app(test_config=None):
     comment_queue_service.init_app(app)
 
     # Seed admin CLI command
-    from app.services.seeder import seed_admin
+    from app.services.seeder import seed_admin, seed_demo_account
 
     @app.cli.command("seed-admin")
     def seed_admin_command():
         """Seeds/Updates the admin user via CLI using .env credentials."""
         seed_admin()
+
+    @app.cli.command("seed-demo")
+    def seed_demo_command():
+        """Seeds/Updates the demo student account via CLI using .env credentials."""
+        seed_demo_account()
 
     from .cli import cli_bp
     app.register_blueprint(cli_bp)
