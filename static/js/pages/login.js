@@ -451,4 +451,38 @@ document.addEventListener("DOMContentLoaded", () => {
             fpBtnText.textContent = "Link Sent ✓";
         }
     });
+
+    // ========== 9. TRY DEMO ACCOUNT ==========
+    const demoBtn = document.getElementById("demo-login-btn");
+    const demoBtnIcon = document.getElementById("demo-btn-icon");
+    const demoBtnText = document.getElementById("demo-btn-text");
+    const demoBtnSpinner = document.getElementById("demo-btn-spinner");
+
+    demoBtn?.addEventListener("click", async () => {
+        demoBtn.disabled = true;
+        // Use style.display directly — never toggle .hidden on .fa-spin here.
+        demoBtnIcon.style.display = "none";
+        demoBtnSpinner.style.display = "inline-block";
+        demoBtnText.textContent = "Signing in...";
+
+        try {
+            const response = await fetch("/api/auth/demo-login", { method: "POST" });
+            const result = await response.json().catch(() => ({}));
+
+            if (response.ok) {
+                showToast("Success", "Logging in to the demo account...", "success");
+                window.location.replace(result.redirect_url);
+                return;
+            }
+
+            showToast("Error", result.error || "Demo account is not available.", "error");
+        } catch (error) {
+            showToast("Network Error", "Please try again.", "error");
+        } finally {
+            demoBtn.disabled = false;
+            demoBtnSpinner.style.display = "none";
+            demoBtnIcon.style.display = "inline-block";
+            demoBtnText.textContent = "Try Demo Account";
+        }
+    });
 });
